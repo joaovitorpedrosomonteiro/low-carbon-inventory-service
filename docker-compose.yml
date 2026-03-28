@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: lowcarbon
+      POSTGRES_PASSWORD: lowcarbon
+      POSTGRES_DB: lowcarbon_inventory
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  inventory-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8085:8085"
+    environment:
+      PORT: 8085
+      DATABASE_URL: postgres://lowcarbon:lowcarbon@postgres:5432/lowcarbon_inventory?sslmode=disable
+      PUBSUB_TOPIC_URL: mem://
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
