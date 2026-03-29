@@ -32,6 +32,7 @@ steps:
       - --add-cloudsql-instances=low-carbon-491109:southamerica-east1:low-carbon-postgres
       - --set-env-vars=DATABASE_URL=postgres://lowcarbon:LowCarbonDB2026!@/inventory?host=/cloudsql/low-carbon-491109:southamerica-east1:low-carbon-postgres&sslmode=disable,REDIS_ADDR=10.196.131.139:6379,JWT_SECRET=super-secret-jwt-key-change-in-production-2026
       - --ingress=all
+      - --service-account=low-carbon-inventory-service-sa@low-carbon-491109.iam.gserviceaccount.com
 
 images:
   - "$_IMAGE_URI"
