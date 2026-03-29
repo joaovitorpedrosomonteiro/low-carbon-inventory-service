@@ -2,29 +2,34 @@ options:
   logging: CLOUD_LOGGING_ONLY
 
 steps:
+  - id: test
+    name: golang:1.22
+    entrypoint: go
+    args: ["build", "./..."]
+
   - id: build
     name: gcr.io/cloud-builders/docker
-    args: ['build', '-t', '$_IMAGE_URI', '.']
+    args: ["build", "-t", "$_IMAGE_URI", "."]
 
   - id: push
     name: gcr.io/cloud-builders/docker
-    args: ['push', '$_IMAGE_URI']
+    args: ["push", "$_IMAGE_URI"]
 
   - id: deploy
     name: gcr.io/google.com/cloudsdktool/cloud-sdk
-    entrypoint: 'gcloud'
+    entrypoint: gcloud
     args:
-      - 'run'
-      - 'services'
-      - 'update'
-      - 'low-carbon-inventory-service'
-      - '--image'
-      - '$_IMAGE_URI'
-      - '--region'
-      - 'southamerica-east1'
-      - '--platform'
-      - 'managed'
-      - '--no-allow-unauthenticated'
+      - run
+      - services
+      - update
+      - low-carbon-inventory-service
+      - --image
+      - $_IMAGE_URI
+      - --region
+      - southamerica-east1
+      - --platform
+      - managed
+      - --no-allow-unauthenticated
 
 images:
-  - '$_IMAGE_URI'
+  - "$_IMAGE_URI"
