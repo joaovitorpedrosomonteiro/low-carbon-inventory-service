@@ -1,15 +1,22 @@
+options:
+  logging: CLOUD_LOGGING_ONLY
+
 steps:
-  - name: 'gcr.io/cloud-builders/docker'
+  - id: build
+    name: gcr.io/cloud-builders/docker
     args: ['build', '-t', '$_IMAGE_URI', '.']
 
-  - name: 'gcr.io/cloud-builders/docker'
+  - id: push
+    name: gcr.io/cloud-builders/docker
     args: ['push', '$_IMAGE_URI']
 
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  - id: deploy
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk
     entrypoint: 'gcloud'
     args:
       - 'run'
-      - 'deploy'
+      - 'services'
+      - 'update'
       - 'low-carbon-inventory-service'
       - '--image'
       - '$_IMAGE_URI'
@@ -17,10 +24,7 @@ steps:
       - 'southamerica-east1'
       - '--platform'
       - 'managed'
-      - '--allow-unauthenticated'
+      - '--no-allow-unauthenticated'
 
 images:
   - '$_IMAGE_URI'
-
-options:
-  defaultLogsBucketBehavior: 'REGIONAL_USER_OWNED_BUCKET'
